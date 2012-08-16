@@ -16,12 +16,12 @@ labels.dat <- read.table("MarkerPopEdit.txt", col.names=c("Individual", "Type", 
 pca.lab <- data.frame(PCA.dat, labels.dat[grep("RA\\d\\d\\d", labels.dat$Pop, invert=TRUE),]) 
 
 pca.lab <- pca.lab[(row.names(pca.lab)!="345"),] #This plant has all "0" values from SmartPCA
-
+pca.lab$new.name <- factor( paste(pca.lab$Species, pca.lab$Pop, sep="," ) )
 pca.lab <- droplevels(pca.lab)
 
-Crop <- "gray0"
-Native <- "dodgerblue4"
-Weedy <- "firebrick"
+Crop.col <- "gray0"
+Native.col <- "dodgerblue4"
+Weedy.col <- "firebrick"
 
 confusus <- 1
 Daikon <- 15
@@ -37,11 +37,11 @@ UnknownSp <- 5
 #plotbyType
 
 plot( pca.lab$V1, pca.lab$V2, 
-  pch=c(confusus, Daikon, European, landra, maritimus, Oilseed, raphanistrum, Rattail, rostratus, UnknownSp)[pca.lab$Species], col=c(Crop, Native, Weedy)[pca.lab$Type], 
+  pch=c(confusus, Daikon, European, landra, maritimus, Oilseed, raphanistrum, Rattail, rostratus, UnknownSp)[pca.lab$Species], col=c(Crop.col, Native.col, Weedy.col)[pca.lab$Type], 
   xlim=range( pca.lab$V1), ylim=range( pca.lab$V2),
   xlab= "PC1", ylab= "PC2" )   
 
-legend(0.05, -0.13, levels(pca.lab$Type), pch=16, col=c(Crop, Native, Weedy), bty="n")
+legend(0.05, -0.13, levels(pca.lab$Type), pch=16, col=c(Crop.col, Native.col, Weedy.col), bty="n")
 
 legend(-0.035, -0.085, legend=c(
 	expression(italic("confusus")), 
@@ -62,30 +62,48 @@ legend(-0.035, -0.15, legend=c(
 	
 #PlotbyPopulation
 
-Weedsym <- c(1:8)
-Nativesym <- c(1:6)
-Cropsym <- c(1:14)
+Weed.sym <- c(1:8)
+Native.sym <- c(1:6)
+Crop.sym <- c(1:14)
 
 par(new=FALSE, mfrow=c(1,1), mar=c(5,6,6,4))
 
+species.order <- pca.lab[order(pca.lab$Species),]
 
-plot(pca.lab$V1, pca.lab$V2, type="n", xlab="PCA1", ylab="PCA2", cex.lab=1.5 )
+Weed.data <- species.order[species.order$Type=="Weedy",]
+Native.data <- species.order[species.order$Type=="Native",]
+Crop.data <- species.order[species.order$Type=="Crop",]
+
+plot(species.order$V1, species.order$V2, type="n", 
+	xlab="PCA1", ylab="PCA2", cex.lab=1.5, ylim=c(-0.32, 0.15) )
 
 par(new=TRUE)
-plot(pca.lab$V1[pca.lab$Type=="Weedy"], pca.lab$V2[pca.lab$Type=="Weedy"], 
-	pch=Weedsym[droplevels(pca.lab$Pop[pca.lab$Type=="Weedy"])], col=Weedy, xlim=range(pca.lab$V1), ylim=range(pca.lab$V2), 
+plot(Weed.data$V1, Weed.data$V2, 
+	pch=Weed.sym[droplevels(Weed.data$new.name)], col=Weedy.col, 
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
 	axes=FALSE, xlab="", ylab="", cex=1.5)
 
 par(new=TRUE)	
-plot(pca.lab$V1[pca.lab$Type=="Native"], pca.lab$V2[pca.lab$Type=="Native"], 
-	pch=Nativesym[droplevels(pca.lab$Pop[pca.lab$Type=="Native"])], col=Native, xlim=range(pca.lab$V1), ylim=range(pca.lab$V2), 
+plot(Native.data$V1, Native.data$V2, 
+	pch=Native.sym[droplevels(Native.data$new.name)], col=Native.col,
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
 	axes=FALSE, xlab="", ylab="", cex=1.5)
 
 par(new=TRUE)
-plot(pca.lab$V1[pca.lab$Type=="Crop"], pca.lab$V2[pca.lab$Type=="Crop"], 
-	pch=Cropsym[droplevels(pca.lab$Pop[pca.lab$Type=="Crop"])], col=Crop, xlim=range(pca.lab$V1), ylim=range(pca.lab$V2), 
+plot(Crop.data$V1, Crop.data$V2, 
+	pch=Crop.sym[droplevels(Crop.data$new.name)], col=Crop.col, 
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
 	axes=FALSE, xlab="", ylab="", cex=1.5)
 
-legend(-0.07, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Weedy"])), pch=Weedsym, col=Weedy, bty="n", title="Weedy", cex=1.5)
-legend(-0.03, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Crop"])), pch=Cropsym, col=Crop, bty="n", ncol=2, title="Crop", cex=1.5)  
-legend(0.05, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Native"])), pch=Nativesym, col=Native, bty="n", title="Native", cex=1.5)
+
+legend(-0.03, -0.2, legend=levels(droplevels(Weed.data$new.name)), 
+	pch=Weed.sym, col=Weedy.col, title="Weedy", cex=1.2)
+
+legend(-0.09, -0.12, legend=levels(droplevels(Crop.data$new.name)), 
+	pch=Crop.sym, col=Crop.col, title="Crop", cex=1.2)  
+
+legend(0.035, -0.225, legend=levels(droplevels(Native.data$new.name)), 
+	pch=Native.sym, col=Native.col, title="Native", cex=1.2)
+
+
+
