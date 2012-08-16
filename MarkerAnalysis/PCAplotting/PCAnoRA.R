@@ -13,7 +13,7 @@ str(PCA.dat)
 
 labels.dat <- read.table("MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
 
-pca.lab <- data.frame(PCA.dat, labels.dat[grep("RA\\d\\d\\d", crap$Pop, invert=TRUE),]) 
+pca.lab <- data.frame(PCA.dat, labels.dat[grep("RA\\d\\d\\d", labels.dat$Pop, invert=TRUE),]) 
 
 pca.lab <- pca.lab[(row.names(pca.lab)!="345"),] #This plant has all "0" values from SmartPCA
 
@@ -86,6 +86,6 @@ plot(pca.lab$V1[pca.lab$Type=="Crop"], pca.lab$V2[pca.lab$Type=="Crop"],
 	pch=Cropsym[droplevels(pca.lab$Pop[pca.lab$Type=="Crop"])], col=Crop, xlim=range(pca.lab$V1), ylim=range(pca.lab$V2), 
 	axes=FALSE, xlab="", ylab="", cex=1.5)
 
-legend(-0.07, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Weedy"])), pch=popsym, col=Weedy, bty="n", title="Weedy", cex=1.5)
-legend(-0.03, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Crop"])), pch=popsym, col=Crop, bty="n", ncol=2, title="Crop", cex=1.5)  
-legend(0.05, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Native"])), pch=popsym, col=Native, bty="n", title="Native", cex=1.5)
+legend(-0.07, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Weedy"])), pch=Weedsym, col=Weedy, bty="n", title="Weedy", cex=1.5)
+legend(-0.03, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Crop"])), pch=Cropsym, col=Crop, bty="n", ncol=2, title="Crop", cex=1.5)  
+legend(0.05, -0.105, legend=levels(droplevels(pca.lab$Pop[pca.lab$Type=="Native"])), pch=Nativesym, col=Native, bty="n", title="Native", cex=1.5)
