@@ -62,10 +62,6 @@ legend(-0.035, -0.15, legend=c(
 	
 #PlotbyPopulation
 
-Weed.sym <- c(1:8)
-Native.sym <- c(1:6)
-Crop.sym <- c(1:14)
-
 par(new=FALSE, mfrow=c(1,1), mar=c(5,6,6,4))
 
 species.order <- pca.lab[order(pca.lab$Species),]
@@ -73,6 +69,10 @@ species.order <- pca.lab[order(pca.lab$Species),]
 Weed.data <- species.order[species.order$Type=="Weedy",]
 Native.data <- species.order[species.order$Type=="Native",]
 Crop.data <- species.order[species.order$Type=="Crop",]
+
+Weed.sym <- c(1:length(levels(droplevels(Weed.data$Pop))))
+Native.sym <- c(1:length(levels(droplevels(Native.data$Pop))))
+Crop.sym <- c(1:length(levels(droplevels(Crop.data$Pop))))
 
 plot(species.order$V1, species.order$V2, type="n", 
 	xlab="PCA1", ylab="PCA2", cex.lab=1.5, ylim=c(-0.32, 0.15) )
