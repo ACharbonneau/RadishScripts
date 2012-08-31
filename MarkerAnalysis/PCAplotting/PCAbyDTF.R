@@ -1,8 +1,8 @@
 source("~/Dropbox/Dworkin_lab/WillPitchers/Will_FUNCTIONS.R")
 
-setwd("~/Documents/RadishData/MarkerData/SSRsnp/")
+setwd("~/Documents/RadishData/2005MarkerData/")
 
-smartpca.pca <- read.table("Marker.pca", skip=11)
+smartpca.pca <- read.table("SmartPCA_SSRsnp/Marker.pca", skip=11)
 
 str(smartpca.pca)
 
@@ -27,13 +27,13 @@ legend(-0.11, -0.05, levels(pca.labD$DTF), col= c("snow3", rev(heat.colors(21)),
 text(-.03,-.1, "'0' denotes un-tested DTF", cex=1.3)
 text(-.03, -.12, "'999' denotes plants that never flowered", cex=1.3)
 
-
-#WithoutRAs As Jeff asked
-
 known.subset <- pca.lab[c(1:148,344:473),]
 known.subset <- droplevels(known.subset)
 known.subset <- known.subset[order(known.subset$Pop),]
 known.subset$Bins <- factor(known.subset$Bins)
+
+#WithoutRAs As Jeff asked
+
 
 Crop <- "gray0"
 Native <- "dodgerblue4"
@@ -54,12 +54,6 @@ text(-.03, -.12, "'999' denotes plants that never flowered", cex=1.3)
 
 
 #No RAs but makes more sense
-
-
-known.subset <- pca.lab[c(1:148,344:473),]
-known.subset <- droplevels(known.subset)
-known.subset <- known.subset[order(known.subset$Pop),]
-known.subset$Bins <- factor(known.subset$Bins)
 
 Crop <- 15
 Native <- 16
