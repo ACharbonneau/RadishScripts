@@ -105,5 +105,26 @@ legend(-0.09, -0.12, legend=levels(droplevels(Crop.data$new.name)),
 legend(0.035, -0.225, legend=levels(droplevels(Native.data$new.name)), 
 	pch=Native.sym, col=Native.col, title="Native", cex=1.2)
 
+#Plot by DTF
 
 
+plot(species.order$V1, species.order$V2, type="n", 
+	xlab="PCA1", ylab="PCA2", cex.lab=1.5, ylim=c(-0.32, 0.15) )
+
+par(new=TRUE)
+plot(Weed.data$V1, Weed.data$V2, 
+	pch=Weed.sym[droplevels(Weed.data$new.name)], col=Weedy.col, 
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
+	axes=FALSE, xlab="", ylab="", cex=1.5)
+
+par(new=TRUE)	
+plot(Native.data$V1, Native.data$V2, 
+	pch=Native.sym[droplevels(Native.data$new.name)], col=Native.col,
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
+	axes=FALSE, xlab="", ylab="", cex=1.5)
+
+par(new=TRUE)
+plot(Crop.data$V1, Crop.data$V2, 
+	pch=Crop.sym[droplevels(Crop.data$new.name)], col=Crop.col, 
+	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
+	axes=FALSE, xlab="", ylab="", cex=1.5)
