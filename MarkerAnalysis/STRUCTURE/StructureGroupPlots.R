@@ -4,7 +4,9 @@ require(ggplot2)
 require(vcd)
 require(reshape)
 
-str.data <- read.csv("NoRaCoNo-10_f.txt", header=F)
+dataset <- "NoRaCoNo-10_f.txt"
+
+str.data <- read.csv(dataset, header=F)
 str.data <- str.data[,c(3,5:ncol(str.data-3))]
 colnames(str.data) <- c("%missing",1:(ncol(str.data)-1))
 
@@ -22,12 +24,12 @@ european.data <- all.data[all.data$Species=="European",]
 oilrat.data <- all.data[all.data$Species=="Rattail" | all.data$Species=="Oilseed",]
 
 
-crop.data.m <- melt(cbind(crop.data, ind=rownames(crop.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
-weed.data.m <- melt(cbind(weed.data, ind=rownames(weed.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
-native.data.m <- melt(cbind(native.data, ind=rownames(native.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
-daikon.data.m <- melt(cbind(daikon.data, ind=rownames(daikon.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
-european.data.m <- melt(cbind(european.data, ind=rownames(european.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
-oilrat.data.m <- melt(cbind(oilrat.data, ind=rownames(oilrat.data)), is.vars=c('ind'), measure.vars=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
+crop.data.m <- melt(cbind(crop.data, ind=rownames(crop.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
+weed.data.m <- melt(cbind(weed.data, ind=rownames(weed.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
+native.data.m <- melt(cbind(native.data, ind=rownames(native.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
+daikon.data.m <- melt(cbind(daikon.data, ind=rownames(daikon.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
+european.data.m <- melt(cbind(european.data, ind=rownames(european.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
+oilrat.data.m <- melt(cbind(oilrat.data, ind=rownames(oilrat.data)), is.vars=c('ind'), id.vars=c("ind", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins", "%missing"))
 
 pops.l <- levels(droplevels(all.data$Pop))
 
@@ -43,20 +45,22 @@ DP <- ggplot(daikon.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(posit
 
 EP <- ggplot(european.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
 
-RP <- ggplot(oilrat.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
-
-
+RP <- ggplot(oilrat.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format()) #+ geom_text(aes(3,.5,label="texthere"))
 
 multiplot(
 	NP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Native") + ylab("% ID to K") + xlab("Individual"), 
 	WP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Weedy") + ylab("% ID to K") + xlab("Individual"), 
 #	CP + theme(axis.text.x = element_text(angle=90, size=7), legend.position="none") + ggtitle("Crop Populations"),
-	DP + theme(axis.text.x = element_text(angle=90, size=10)) + ggtitle("Daikon") + ylab("% ID to K") + xlab("Individual") + guides(fill=guide_legend(title="Groups")), 
-	EP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("European") + ylab("% ID to K") + xlab("Individual"), 
+#	DP + theme(axis.text.x = element_text(angle=90, size=10)) + ggtitle("Daikon") + ylab("% ID to K") + xlab("Individual") + guides(fill=guide_legend(title="Groups")), 
+	DP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Daikon") + ylab("%ID to K") + xlab("Individual"),
+	EP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Crop European") + ylab("% ID to K") + xlab("Individual"), 
 	RP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Rattail & Oilseed") + ylab("% ID to K") + xlab("Individual"), 
 	cols=1)
 
+geom_text(aes(x2,y2,label=texthere),
+	data.frame(x2=c(2,4), y2=c(2,4), texthere=c("GMIL", "AFFR")))
 
-HP1 <- ggplot(all.data.m, aes(x = ind, y = value, fill = variable)) + 
-	geom_bar(position = "fill") + 
-	scale_y_continuous(labels = percent_format())
+
+#HP1 <- ggplot(all.data.m, aes(x = ind, y = value, fill = variable)) + 
+	#geom_bar(position = "fill") + 
+	#scale_y_continuous(labels = percent_format())
