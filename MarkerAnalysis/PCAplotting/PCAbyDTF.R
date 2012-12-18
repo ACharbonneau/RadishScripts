@@ -6,7 +6,7 @@ smartpca.pca <- read.table("SmartPCA_SSRsnp/Marker.pca", skip=11)
 
 str(smartpca.pca)
 
-labels.dat <- read.table("MarkerPopEdit.txt", col.names= c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
+labels.dat <- read.table("MarkerPopEdit.txt", sep="\t", col.names= c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
 
 pca.lab <- data.frame(smartpca.pca, labels.dat)
 

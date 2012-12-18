@@ -7,6 +7,11 @@ ApproxBayesFac <- function(x) {
 	return(BayesProb)
 }
 
+length2 <- function(x){
+	x <- x[!is.na(x)]
+	length(x)
+}
+
 std.err <- function(x){
 	x <- x[!is.na(x)]
 	sd(x)/sqrt(length(x))
@@ -57,4 +62,12 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
+
+
+ConditionNumber <- function(YourModel=lm.full) {
+  x <- model.matrix(YourModel)
+  eigen.x <- eigen(t(x) %*%x)
+  sqrt(max(eigen.x$values)/min(eigen.x$values))
+  }
+  
 
