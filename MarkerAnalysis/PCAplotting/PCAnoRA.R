@@ -1,15 +1,18 @@
 #Plots eigenvalues from Marker.pca output file from SmartPCA by Eigensoft. Overlays data with colors denoting the subspecies, type, DTF or other life history traits. These data are a subset of the 2005 marker data that omits all RA### genotyping. 
 
 source("~/Dropbox/Dworkin_lab/WillPitchers/WRP_FUNCTIONS.R")
-source('~/Documents/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
 
+source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
 
-setwd("~/Documents/RadishData/2005MarkerData/")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/")
 
 
 PCA.dat <- read.table("SmartPCAnoRA/Marker.pca", skip=11)
 
+PCA.all <- read.table("SmartPCA_SSRsnp/Marker.pca", skip=11)
+
 str(PCA.dat)
+str(PCA.all)
 
 labels.dat <- read.table("MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"), sep="\t")
 
@@ -19,9 +22,16 @@ pca.lab <- pca.lab[(row.names(pca.lab)!="345"),] #This plant has all "0" values 
 pca.lab$new.name <- factor( paste(pca.lab$Species, pca.lab$Pop, sep="," ) )
 pca.lab <- droplevels(pca.lab)
 
+pca.all <- data.frame(PCA.all, labels.dat)
+pca.all <- pca.all[pca.all$V1 !=0,]
+
+pca.all <- droplevels(pca.all)
+
+
 Crop.col <- "gray0"
 Native.col <- "dodgerblue4"
 Weedy.col <- "firebrick"
+Unknown.col <- "tan"
 
 confusus <- 1
 Daikon <- 15
@@ -185,8 +195,10 @@ legend(0.035, -0.225, legend=levels(droplevels(Native.data$new.name)),
 
 #####################################################
 cc <- colors()
+cc <- cc[2:657]
 
 randcols <- sample(cc, 28)
+rand2cols <- sample(cc, 47)
 
 require(rgl)
 
@@ -195,6 +207,13 @@ plot3d(pca.lab$V1, pca.lab$V2, pca.lab$V3,
 #	col=randcols[pca.lab$Pop], 
 	size=8, 
 	xlab="PCA1", ylab="PCA2", zlab="PCA3")
+
+plot3d(pca.all$V1, pca.all$V2, pca.all$V3, 
+	col=c(Crop.col, Native.col, Unknown.col, Weedy.col)[pca.all$Type], 
+#	col=rand2cols[pca.all$Pop], 
+	size=8, 
+	xlab="PCA1", ylab="PCA2", zlab="PCA3")
+
 
 
 #####################################################
