@@ -1,9 +1,9 @@
 #Plots eigenvalues from Marker.pca output file from SmartPCA by Eigensoft. Overlays data with colors denoting the subspecies and presumed life history. 
 #Some of these plots remove RA plant data without re-calculating the eigenvalues!!
 
-source("~/Dropbox/Dworkin_lab/WillPitchers/Will_FUNCTIONS.R")
+source("~/Dropbox/Dworkin_lab/WillPitchers/WRP_FUNCTIONS.R")
 
-setwd("~/Documents/RadishData/2005MarkerData/SmartPCA_SSRsnp/")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/SmartPCA_SSRsnp/")
 
 PCA.dat1 <- read.table("Marker.pca", skip=11)
 
@@ -11,7 +11,7 @@ str(PCA.dat1)
 
 # labels.dat1 <- read.table("Marker.ind", col.names= c("Individual", "Type", "Pop"))
 
-labels.dat2 <- read.table("~/Documents/RadishData/2005MarkerData/MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
+labels.dat2 <- read.table("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
 
 pca.lab <- data.frame(PCA.dat1, labels.dat2)
 
