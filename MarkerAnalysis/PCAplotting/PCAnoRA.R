@@ -11,8 +11,11 @@ PCA.dat <- read.table("SmartPCAnoRA/Marker.pca", skip=11)
 
 PCA.all <- read.table("SmartPCA_SSRsnp/Marker.pca", skip=11)
 
+PCA.crop <- read.table("SmartPCA_justCrops/justCrops.pca", skip=11)
+
 str(PCA.dat)
 str(PCA.all)
+str(PCA.crop)
 
 labels.dat <- read.table("MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"), sep="\t")
 
@@ -26,6 +29,9 @@ pca.all <- data.frame(PCA.all, labels.dat)
 pca.all <- pca.all[pca.all$V1 !=0,]
 
 pca.all <- droplevels(pca.all)
+
+pca.crop <- data.frame(PCA.crop, labels.dat[labels.dat$Type=="Crop",])
+pca.crop <- droplevels(pca.crop)
 
 
 Crop.col <- "gray0"
@@ -127,7 +133,7 @@ plot( pca.lab$V1, pca.lab$V2,
 
 legend(-0.004, -0.164, c("< 45 Days", "46 - 85 Days", "> 85 Days"),
 	pch=16, col=c("palegreen", "chartreuse4", "grey4"),
-	cex=1.4, title="Flowering Time")
+	cex=1.4, title="Flowering Time", bty="n")
 
 legend(-0.09, -0.14, legend=c(
 	expression(italic("confusus")), 
@@ -138,7 +144,7 @@ legend(-0.09, -0.14, legend=c(
 	#plain(" (black)"), sep=" ")), 
 	expression(italic("rostratus"))),
 	pch=c(confusus, landra, maritimus, raphanistrum, rostratus), 
-	cex=1.4, title="Natives")
+	cex=1.4, title="Natives", bty="n")
 	
 
 legend(-0.043, -0.152, legend=c(	
@@ -147,9 +153,9 @@ legend(-0.043, -0.152, legend=c(
 	"Oilseed", 
 	"Rattail"),
 	pch=c(Daikon, European, Oilseed, Rattail),
-	cex=1.4, title="Crops")
+	cex=1.4, title="Crops", bty="n")
 
-legend(-0.09, -0.1, legend=expression(italic("raphanistrum")), pch=16, cex=1.4, title="Weeds")
+legend(-0.09, -0.1, legend=expression(italic("raphanistrum")), pch=16, cex=1.4, title="Weeds", bty="n")
 
 
 
@@ -217,6 +223,34 @@ plot3d(pca.all$V1, pca.all$V2, pca.all$V3,
 
 
 #####################################################
+
+# Just crops plot
+
+
+
+#####################################################
+
+crop.order <- pca.crop[order(pca.crop$Species),]
+
+plot(crop.order$V1, crop.order$V2, 
+	xlab="PCA1", ylab="PCA2", 
+	pch=16, 
+	col=c("aquamarine", "blueviolet", "chocolate4", "blue", "deeppink", 
+	"chartreuse4", "grey69", "red3", "plum2", "orchid1", 
+	"goldenrod", "darkolivegreen3", "black", "lightblue3")[pca.crop$Pop], 
+	cex.lab=1.5, ylim=c(-0.32, 0.15) )
+	
+
+legend(0.05, -0.18, legend=levels(droplevels(pca.crop$Pop)), 
+	pch=16, col=c("aquamarine", "blueviolet", "chocolate4", "blue", "deeppink", 
+	"chartreuse4", "grey69", "red3", "plum2", "orchid1", 
+	"goldenrod", "darkolivegreen3", "black", "lightblue3"), title="Weedy", cex=1.2, ncol=3)
+
+
+
+
+
+
 
 cubedraw <- function(res3d, min = 0, max = 255, cex = 2, text. = FALSE)
   {
