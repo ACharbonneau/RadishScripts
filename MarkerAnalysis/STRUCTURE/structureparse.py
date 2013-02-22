@@ -1,10 +1,10 @@
 import sys
 import re
 
-#sys_input = sys.argv
+sys_input = sys.argv
 
-sys_input = "Overlap.py Bn26a.txt-10_f.forparse"
-sys_input = sys_input.split()
+#sys_input = "Overlap.py Bn26a.txt-10_f.forparse"
+#sys_input = sys_input.split()
 
 file_input = open(sys_input[1], "r")
 
