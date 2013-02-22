@@ -1,5 +1,5 @@
-source('~/Documents/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
-setwd("~/Documents/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles")
+source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles")
 require(ggplot2)
 require(vcd)
 require(reshape)
@@ -10,7 +10,7 @@ str.data <- read.csv(dataset, header=F)
 str.data <- str.data[,c(3,5:ncol(str.data-3))]
 colnames(str.data) <- c("%missing",1:(ncol(str.data)-1))
 
-str.labels <- read.table("~/Documents/RadishData/2005MarkerData/MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
+str.labels <- read.table("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
 str.labels <- str.labels[str.labels$Type!="UnknownType",]
 
 all.data <- cbind(str.labels[,2:8],str.data)
