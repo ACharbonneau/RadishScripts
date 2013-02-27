@@ -1,14 +1,35 @@
 source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Bn26a")
-require(ggplot2)
-require(vcd)
-require(reshape)
 require(RColorBrewer)
+#dataset <- "NoRACoNo-5_f.txt"
 
-dataset <- "Bn26a.txt-5_f.parsed"
+########################################################
+
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
+
+#setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles/Corr/Run3")
+
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/Na10H06JK.pdf", height=9.3, width=15.3)
+
+########################################################
+
+ALLTHEFILES <- dir()
+
+File_Num <- length(ALLTHEFILES)+1
+File_list <- matrix(1:File_Num, nrow=File_Num, ncol=2)
+for(n in 1:File_Num){
+	x <- ALLTHEFILES[n]
+	m <- regexec("-([0-9]+)", x)
+	K_new <- regmatches(x, m)
+	K <- K_new[[1]][2]
+	#print(K)
+	File_list[as.numeric(K),1] <- x
+}
 
 
-
+for(i in c(2:length(ALLTHEFILES)){
+	
+dataset <- File_list[i,1]
+str.data <- 0
 str.data <- read.csv(dataset, header=F)
 str.data <- str.data[,c(3,5:ncol(str.data-3))]
 K = length(str.data)-1
@@ -46,20 +67,22 @@ par(mfrow=c(5,1), mar=c(3.5,3,3,2), oma=c(1,1,1,1), las=2)
 
 col_pal1 = brewer.pal(12, "Set3")
 col_pal2 = brewer.pal(8, "Dark2")
-col_pal = c(col_pal1, col_pal2)
+col_pal3 = brewer.pal(12, "Paired")
+col_pal = c(col_pal1, col_pal2, col_pal3)
 
 K_text <- "K="
 
-barplot(native.table, main = "Native", cex.main=2, col=brewer.pal(length(native.table[,1]), "Set3"), cex.names=1.2)
-legend(x=71, y=.7, legend=paste(K_text,K), bty="n", cex=1.7 )
+barplot(native.table, main = "Native", cex.main=2, col=col_pal[1:K], cex.names=1.2)
+legend(x=70.5, y=.7, legend=paste(K_text,K), bty="n", cex=1.7 )
 
-barplot(weed.table, main = "Weed", cex.main=2, col=brewer.pal(length(weed.table[,1]), "Set3"), cex.names=1.2)
+barplot(weed.table, main = "Weed", cex.main=2, col=col_pal[1:K], cex.names=1.2)
 
-barplot(daikon.table, main = "Daikon", cex.main=2, col=brewer.pal(length(daikon.table[,1]), "Set3"), cex.names=1.2)
+barplot(daikon.table, main = "Daikon", cex.main=2, col=col_pal[1:K], cex.names=1.2)
 
-barplot(european.table, main = "European", cex.main=2, col=brewer.pal(length(european.table[,1]), "Set3"), cex.names=1.2)
+barplot(european.table, main = "European", cex.main=2, col=col_pal[1:K], cex.names=1.2)
 
-barplot(oilrat.table, main = "Oilseed and Rattail", cex.main=2, col=brewer.pal(length(oilrat.table[,1]), "Set3"), cex.names=1.2)
+barplot(oilrat.table, main = "Oilseed and Rattail", cex.main=2, col=col_pal[1:K], cex.names=1.2)
 
+}
 
-
+dev.off()
