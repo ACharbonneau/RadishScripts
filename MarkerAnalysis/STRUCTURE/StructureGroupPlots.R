@@ -1,10 +1,12 @@
 source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Bn26a")
 require(ggplot2)
 require(vcd)
 require(reshape)
 
-dataset <- "NoRaCoNo-10_f.txt"
+#dataset <- "Bn26a.txt-5_f.parsed"
+
+dataset <- 
 
 str.data <- read.csv(dataset, header=F)
 str.data <- str.data[,c(3,5:ncol(str.data-3))]
@@ -35,17 +37,37 @@ pops.l <- levels(droplevels(all.data$Pop))
 
 library(scales)
 
-NP <- ggplot(native.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
+##  Labels
+thing = 1
+nacho <- matrix(NA,6,3)
+for (i in c("GMIL", "CBES", "NZIL", "SAES", "MAES", "PBFR" )){
+	taco <- native.data.m[native.data.m[3]==i,][1]
+	nacho[thing,1] <- taco[,1][3]
+    nacho[thing,2] <- i
+	thing=thing + 1
+}
 
-WP <- ggplot(weed.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
 
-CP <- ggplot(crop.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
+NP_label <- c("GMIL", "CBES", "NZIL", "SAES", "MAES", "PBFR" )
+NP_x <- c
+NP_y <- 
+colnames(NP_lab)[1] <- "x"
+NP_lab$lab <- as.character(100 * dfTab$Freq / sum(dfTab$Freq))
 
-DP <- ggplot(daikon.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
 
-EP <- ggplot(european.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format())
 
-RP <- ggplot(oilrat.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill") + scale_y_continuous(labels=percent_format()) #+ geom_text(aes(3,.5,label="texthere"))
+
+NP <- ggplot(native.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
+
+WP <- ggplot(weed.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
+
+CP <- ggplot(crop.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
+
+DP <- ggplot(daikon.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
+
+EP <- ggplot(european.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
+
+RP <- ggplot(oilrat.data.m, aes(x=ind, y=value, fill=variable)) + geom_bar(position= "fill", stat="identity") + scale_y_continuous(labels=percent_format())
 
 multiplot(
 	NP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Native") + ylab("% ID to K") + xlab("Individual"), 
@@ -57,8 +79,11 @@ multiplot(
 	RP + theme(axis.text.x = element_text(angle=90, size=10), legend.position="none") + ggtitle("Rattail & Oilseed") + ylab("% ID to K") + xlab("Individual"), 
 	cols=1)
 
+
+
+
 geom_text(aes(x2,y2,label=texthere),
-	data.frame(x2=c(2,4), y2=c(2,4), texthere=c("GMIL", "AFFR")))
+	data.frame(x2=c(0,0), y2=c(0,0), texthere=c("GMIL", "AFFR")))
 
 
 #HP1 <- ggplot(all.data.m, aes(x = ind, y = value, fill = variable)) + 
