@@ -4,17 +4,21 @@ require(RColorBrewer)
 
 ########################################################
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
+#setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
 
-#setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles/Corr/Run3")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles/UnCorr/Run1")
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/Na10H06JK.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/UnCorr1.pdf", height=9.3, width=15.3)
 
 ########################################################
 
+#### You have to add a +1 to File_number and chage the second for loop to 2:length(ALLTHEFILES) for 
+#### datasets without a K=1
+
+
 ALLTHEFILES <- dir()
 
-File_Num <- length(ALLTHEFILES)+1
+File_Num <- length(ALLTHEFILES)
 File_list <- matrix(1:File_Num, nrow=File_Num, ncol=2)
 for(n in 1:File_Num){
 	x <- ALLTHEFILES[n]
@@ -26,7 +30,7 @@ for(n in 1:File_Num){
 }
 
 
-for(i in c(2:length(ALLTHEFILES)){
+for(i in c(1:length(ALLTHEFILES)){
 	
 dataset <- File_list[i,1]
 str.data <- 0
