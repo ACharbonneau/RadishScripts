@@ -4,11 +4,16 @@ import re
 sys_input = sys.argv
 
 #sys_input = "Overlap.py Bn26a.txt-10_f.forparse"
+#     NoRACoNo-2_f
 #sys_input = sys_input.split()
 
 file_input = open(sys_input[1], "r")
 
-rm_end = r"(\w+\.txt-\d+_f)\.forparse"
+try:
+    rm_end = r"(\w+\.txt-\d+_f)\.forparse"
+except:
+    rm_end = r"(\w+-\d+_f)"
+
 add_end = r"\1.parsed"
 
 out_name = re.sub(rm_end, add_end, sys_input[1])
@@ -36,3 +41,4 @@ for line in open_file:
             
 
 file_input.close()
+file_output.close()
