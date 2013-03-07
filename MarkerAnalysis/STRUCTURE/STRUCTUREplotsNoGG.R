@@ -6,9 +6,12 @@ require(RColorBrewer)
 
 #setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/NoRANoHelpGroups/IndivFiles/UnCorr/Run1")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNo/NoRACoNoParsed20/")
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/UnCorr1.pdf", height=9.3, width=15.3)
+#setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/NoAdmixture/Parsed")
+
+
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/NoRACoNo20.pdf", height=9.3, width=15.3)
 
 ########################################################
 
@@ -30,7 +33,7 @@ for(n in 1:File_Num){
 }
 
 
-for(i in c(1:length(ALLTHEFILES)){
+for(i in c(1:length(ALLTHEFILES))){
 	
 dataset <- File_list[i,1]
 str.data <- 0
