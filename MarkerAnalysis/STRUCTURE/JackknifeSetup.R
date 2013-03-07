@@ -1,6 +1,8 @@
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife")
-NoRApheno <- read.table("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/NoRApheno.txt", skip=1, colnames= c(1:49))
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoMarkerJackknife/Jackknife")
+NoRApheno <- read.table("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/NoRApheno.txt", skip=1, col.names= c(1:49))
+
+##################  Set up Jackknife by marker #######################
 
 markerA <- seq(7, 45, 2)
 markerB <- seq(10, 48, 2)
@@ -18,3 +20,15 @@ for(i in 1:20){
 lastset <- NoRApheno[,c(1:47)]
 write.table(lastset, names[21], sep=" ", row.names=FALSE, col.names=FALSE) 
 
+##################  Set up Jackknife by population #######################
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoPopJackknife/Jackknife")
+Poplabels <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEdit.txt", header=F, sep="\t")
+
+NoRApheno$facPop <- as.factor(NoRApheno$X4)
+NoRApheno$Poplabels <- Poplabels$V3[Poplabels$V2 != "UnknownType"]
+Pops <- levels(NoRApheno$facPop)
+
+for(i in Pops){
+	newset <- NoRApheno[NoRApheno$facPop != i,]
+	write.table(newset[,1:49], file = paste(levels(droplevels(NoRApheno$Poplabels[NoRApheno$facPop==i])), "txt", sep="."), row.names=F, col.names=F)
+} 
