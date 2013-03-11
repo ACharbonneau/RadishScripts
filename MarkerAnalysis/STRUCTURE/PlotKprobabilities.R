@@ -7,21 +7,28 @@
 
 source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
 
-Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNo/Probabilities/NoRACoNocombinedProbs.csv", header=T, sep="\t")
+#Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNo/Probabilities/NoRACoNocombinedProbs.csv", header=T, sep="\t")
 
+Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoPopJackknife/Probabilities/combo.csv", header=F, sep=",")
+
+colnames(Prob_data) <- c("RunNumber", "KNumber", "Estimated_Ln_Prob_of_Data", "Mean_value_of_ln_likelihood", "Variance_of_ln_likelihood")
 
 
 probs <- list()
-for(i in seq(1,20)){
+#for(i in seq(1,20)){
+for(i in levels(Prob_data$RunNumber)){
 probs[[i]] <- cbind(Prob_data$KNumber[Prob_data$RunNumber==i], Prob_data$Estimated_Ln_Prob_of_Data[Prob_data$RunNumber==i],ApproxBayesFac(Prob_data$Estimated_Ln_Prob_of_Data[Prob_data$RunNumber==i])
 )
 }
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/ProbabilityOfK.pdf")
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/ProbOfKjkByPop.pdf")
 
-for(i in seq(1,20)){
-plot(probs[[i]][,3], xlab="Proposed K", ylab="Approximate Bayes Factor", main=paste("Run Number", i, sep=" "))
-text(x=seq(1,28), y=probs[[i]][,3], pos=1, cex=.7)
+#for(i in seq(1,20)){
+for(i in levels(Prob_data$RunNumber)){
+plot(probs[[i]][ order(probs[[i]][,1]) ,3]#probs[[i]][,3]
+, xlab="Proposed K", ylab="Approximate Bayes Factor", main=paste("Run", i, sep=" "))
+text(x=seq(1,20), y=probs[[i]][ order(probs[[i]][,1]) ,3]#probs[[i]][,3]
+, pos=1, cex=.7)
 }
 
 BestK = rep(NA, 20)
