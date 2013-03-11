@@ -6,16 +6,16 @@ require(RColorBrewer)
 
 #setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNo/NoRACoNoParsed20/")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/CLUMPP/NoRACoNo/")
 
 #setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/NoAdmixture/Parsed")
 
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/NoRACoNo20.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/CLUMMP6.pdf", height=9.3, width=15.3)
 
 ########################################################
 
-#### You have to add a +1 to File_number and chage the second for loop to 2:length(ALLTHEFILES) for 
+#### You have to add a +1 to File_number and change the second for loop to 2:length(ALLTHEFILES) for 
 #### datasets without a K=1
 
 
