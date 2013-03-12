@@ -89,7 +89,7 @@ par(fig=c(0,1,.8,.9), new=TRUE)
 barplot(native.table, col=col_pal[1:K], cex.names=1.2, xaxt="n", yaxt="n", space=c(rep(0,10),1, rep(0,9), 1, rep(0,9), 1,rep(0,9), 1, rep(0,9), 1,rep(0,9)))
 axis(side=3, at=33, labels="STRUCTURE Plot, K=6", cex=1.2, tick=F, line=.8)
 axis(side=3, at=33, labels="Natives", cex=1, tick=F, line=-1)
-axis(side=1, at=c(5,16,27,38,49,60), labels=c(rep("maritimus", 2), "landra", "raphanistrum", "rostratus", "confusus"), tick=F, line=-1)
+axis(side=1, at=c(5,16,27,38,49,60), labels=c(rep(expression(italic("R.r.maritimus")), 2), expression(italic("R.r.landra")), expression(italic("R.r.raphanistrum")), expression(italic("R.rostratus")), expression(italic("R.confusus"))), tick=F, line=-1)
 #legend(x=70.5, y=.7, legend=paste(K_text,K), bty="n", cex=1.7 )
 
 par(fig=c(0,1,.6,.7), new=TRUE)
