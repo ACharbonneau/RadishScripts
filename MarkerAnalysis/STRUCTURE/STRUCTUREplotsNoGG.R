@@ -6,12 +6,14 @@ require(RColorBrewer)
 
 #setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoJackknife/Jackknife/Parsed/Na10H06Parsed/")
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/CLUMPP/NoRACoNo/")
+#setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/CLUMPP/NoRACoNo/")
+
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoPopJackknife/JustWeeds/jwClumppout/")
 
 #setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/NoAdmixture/Parsed")
 
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/CLUMMP6.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/jwClumpp", height=9.3, width=15.3)
 
 ########################################################
 
@@ -43,7 +45,8 @@ K = length(str.data)-1
 colnames(str.data) <- c("%missing",1:(ncol(str.data)-1))
 
 str.labels <- read.table("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"))
-str.labels <- str.labels[str.labels$Type!="UnknownType",]
+#str.labels <- str.labels[str.labels$Type!="UnknownType",]
+str.labels <- str.labels[str.labels$Type=="Weedy",]
 
 all.data <- cbind(str.labels[,2:8],str.data)
 row.names(all.data) <- str.labels$Individual
