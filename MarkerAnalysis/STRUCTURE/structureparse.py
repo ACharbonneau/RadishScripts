@@ -9,10 +9,7 @@ sys_input = sys.argv
 
 file_input = open(sys_input[1], "r")
 
-try:
-    rm_end = r"(\w+\.txt-\d+_f)\.forparse"
-except:
-    rm_end = r"(\w+-\d+_f)"
+rm_end = r"(.*-\d+_f)\.forparse"
 
 add_end = r"\1.parsed"
 
