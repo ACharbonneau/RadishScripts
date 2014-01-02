@@ -7,17 +7,17 @@ source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', 
 setwd("/Volumes/Storage/RadishData/2005MarkerData/")
 
 
-PCA.dat <- read.table("SmartPCAnoRA/Marker.pca", skip=11)
+PCA.dat <- read.table("SmartPCA/SmartPCAnoRA/Marker.pca", skip=11)
 
-PCA.all <- read.table("SmartPCA_SSRsnp/Marker.pca", skip=11)
+PCA.all <- read.table("SmartPCA/SmartPCA_SSRsnp/Marker.pca", skip=11)
 
-PCA.crop <- read.table("SmartPCA_justCrops/justCrops.pca", skip=11)
+PCA.crop <- read.table("SmartPCA/SmartPCA_justCrops/justCrops.pca", skip=11)
 
 str(PCA.dat)
 str(PCA.all)
 str(PCA.crop)
 
-labels.dat <- read.table("MarkerPopEdit.txt", col.names=c("Individual", "Type", "Pop", "Species", "Color", "Vernalization", "DTF", "Bins"), sep="\t")
+labels.dat <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEditOrder.csv", header=F, col.names=c("Individual", "Type", "Pop", "Order", "Name", "Species", "Color", "Vernalization", "DTF", "Bins"))
 
 pca.lab <- data.frame(PCA.dat, labels.dat[grep("RA\\d\\d\\d", labels.dat$Pop, invert=TRUE),]) 
 
@@ -68,12 +68,12 @@ Crop.sym <- c(1:length(levels(droplevels(Crop.data$Pop))))
 
 plot( pca.lab$V1, pca.lab$V2, 
   pch=c(confusus, Daikon, European, landra, maritimus, Oilseed, raphanistrum, Rattail, rostratus, UnknownSp)[pca.lab$Species], col=c(Crop.col, Native.col, Weedy.col)[pca.lab$Type], 
-  xlim=range( pca.lab$V1), ylim=range( pca.lab$V2),
+  xlim=range( pca.lab$V1), ylim=range( pca.lab$V1),
   xlab= "PC1", ylab= "PC2" )   
 
-legend(0.05, -0.13, levels(pca.lab$Type), pch=16, col=c(Crop.col, Native.col, Weedy.col), bty="n")
+legend(0.055, 0.185, levels(pca.lab$Type), pch=16, col=c(Crop.col, Native.col, Weedy.col), bty="n")
 
-legend(-0.035, -0.085, legend=c(
+legend(0.11, 0.185, legend=c(
 	expression(italic("confusus")), 
 	expression(italic("landra")), 
 	expression(italic("maritimus")),
@@ -81,7 +81,7 @@ legend(-0.035, -0.085, legend=c(
 	expression(italic("rostratus"))),
 	pch=c(confusus, landra, maritimus, raphanistrum, rostratus), bty ="n")
 
-legend(-0.035, -0.15, legend=c(	
+legend(0.11, 0.132, legend=c(	
 	"Daikon", 
 	"European",
 	"Oilseed", 
@@ -91,37 +91,37 @@ legend(-0.035, -0.15, legend=c(
 
 #PlotbyPopulation
 
-
+par(mar=c(4,4,3,1))
 plot(species.order$V1, species.order$V2, type="n", 
-	xlab="PCA1", ylab="PCA2", cex.lab=1.5, ylim=c(-0.32, 0.15) )
+	xlab="PCA1", ylab="PCA2", cex.lab=1.1, xlim=c(-.3,.2), ylim=c(-.3,.2) )
 
 par(new=TRUE)
 plot(Weed.data$V1, Weed.data$V2, 
 	pch=Weed.sym[droplevels(Weed.data$new.name)], col=Weedy.col, 
 	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
-	axes=FALSE, xlab="", ylab="", cex=1.5)
+	axes=FALSE, xlab="", ylab="", cex=1.2)
 
 par(new=TRUE)	
 plot(Native.data$V1, Native.data$V2, 
 	pch=Native.sym[droplevels(Native.data$new.name)], col=Native.col,
 	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
-	axes=FALSE, xlab="", ylab="", cex=1.5)
+	axes=FALSE, xlab="", ylab="", cex=1.2)
 
 par(new=TRUE)
 plot(Crop.data$V1, Crop.data$V2, 
 	pch=Crop.sym[droplevels(Crop.data$new.name)], col=Crop.col, 
 	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
-	axes=FALSE, xlab="", ylab="", cex=1.5)
+	axes=FALSE, xlab="", ylab="", cex=1.2)
 
 
-legend(-0.04, -0.18, legend=levels(droplevels(Weed.data$new.name)), 
-	pch=Weed.sym, col=Weedy.col, title="Weedy", cex=1.1)
+legend(-0.023, -0.175, legend=levels(droplevels(Weed.data$new.name)), 
+	pch=Weed.sym, col=Weedy.col, title="Weedy", cex=1)
 
-legend(-0.09, -0.09, legend=levels(droplevels(Crop.data$new.name)), 
-	pch=Crop.sym, col=Crop.col, title="Crop", cex=1.1)  
+legend(-0.09, -0.08, legend=levels(droplevels(Crop.data$new.name)), 
+	pch=Crop.sym, col=Crop.col, title="Crop", cex=1)  
 
-legend(0.015, -0.21, legend=levels(droplevels(Native.data$new.name)), 
-	pch=Native.sym, col=Native.col, title="Native", cex=1.1)
+legend(0.053, -0.207, legend=levels(droplevels(Native.data$new.name)), 
+	pch=Native.sym, col=Native.col, title="Native", cex=1)
 
 #Plot by DTF
 
@@ -164,9 +164,9 @@ legend(-0.09, -0.1, legend=expression(italic("raphanistrum")), pch=16, cex=1.4, 
 
 
 
-
+pdf(file="squareNoRApca.pdf", width=8.5, height=8.5)
 plot(species.order$V1, species.order$V2, type="n", 
-	xlab="PCA1", ylab="PCA2", cex.lab=1.5, ylim=c(-0.32, 0.15) )
+	xlab="Eigenvector 1", ylab="Eigenvector 2", cex.lab=1.1,xlim=c(-0.5, 0.15), ylim=c(-0.5, 0.15) )
 
 par(new=TRUE)
 plot(Weed.data$V1, Weed.data$V2, 
@@ -186,15 +186,15 @@ plot(Crop.data$V1, Crop.data$V2,
 	xlim=range(species.order$V1), ylim=c(-0.32, 0.15), 
 	axes=FALSE, xlab="", ylab="", cex=1.5)
 
-legend(-0.03, -0.2, legend=levels(droplevels(Weed.data$new.name)), 
-	pch=Weed.sym, col=Weedy.col, title="Weedy", cex=1.2)
+legend(-.023, -0.181, legend=levels(droplevels(Weed.data$new.name)), 
+	pch=Weed.sym, col=Weedy.col, title="Weedy", cex=1)
 
-legend(-0.09, -0.12, legend=levels(droplevels(Crop.data$new.name)), 
-	pch=Crop.sym, col=Crop.col, title="Crop", cex=1.2)  
+legend(-.09, -0.09, legend=levels(droplevels(Crop.data$new.name)), 
+	pch=Crop.sym, col=Crop.col, title="Crop", cex=1)  
 
-legend(0.035, -0.225, legend=levels(droplevels(Native.data$new.name)), 
-	pch=Native.sym, col=Native.col, title="Native", cex=1.2)
-
+legend(.052, -0.212, legend=levels(droplevels(Native.data$new.name)), 
+	pch=Native.sym, col=Native.col, title="Native", cex=1)
+dev.off()
 #####################################################
 
 #3D scatterplot of first 3 PCA
