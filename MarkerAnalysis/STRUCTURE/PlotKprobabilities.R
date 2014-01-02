@@ -9,7 +9,9 @@ source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', 
 
 #Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNo/Probabilities/NoRACoNocombinedProbs.csv", header=T, sep="\t")
 
-Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoPopJackknife/Probabilities/combo.csv", header=F, sep=",")
+#Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRACoNoPopJackknife/Probabilities/combo.csv", header=F, sep=",")
+
+Prob_data <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/AllrunProbabilities.txt", header=F,sep=",")
 
 colnames(Prob_data) <- c("RunNumber", "KNumber", "Estimated_Ln_Prob_of_Data", "Mean_value_of_ln_likelihood", "Variance_of_ln_likelihood")
 
@@ -21,7 +23,7 @@ probs[[i]] <- cbind(Prob_data$KNumber[Prob_data$RunNumber==i], Prob_data$Estimat
 )
 }
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/ProbOfKjkByPop.pdf")
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Plots/ProbOfnoNZIL.pdf")
 
 #for(i in seq(1,20)){
 for(i in levels(Prob_data$RunNumber)){
@@ -31,13 +33,13 @@ text(x=seq(1,20), y=probs[[i]][ order(probs[[i]][,1]) ,3]#probs[[i]][,3]
 , pos=1, cex=.7)
 }
 
-BestK = rep(NA, 20)
-for(i in seq(1,20)){
+BestK = rep(NA, length(levels(Prob_data$RunNumber)))
+for(i in seq(1,length(levels(Prob_data$RunNumber)))){
 	BestK[i] <- probs[[i]][,1] [probs[[i]][,3]== max(probs[[i]][,3])]
 }
 
-BestK = BestK[c(1:15, 20)]
-plot(density(BestK, bw=.4), main= "Density Plot of Best Ks from 16 runs")
+BestK = BestK[seq(1,length(levels(Prob_data$RunNumber)))]
+plot(density(BestK, bw=.4), main= "Density Plot of Best Ks")
 
 
 dev.off()
