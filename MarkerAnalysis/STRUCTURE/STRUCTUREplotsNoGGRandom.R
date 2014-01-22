@@ -5,9 +5,9 @@ require(RColorBrewer)
 ########################################################
 
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/NoRANoNZIL_20/parsed_data")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/parsed_data")
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/Random20.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/RanalphaNZIL.pdf", height=9.3, width=15.3)
 
 ########################################################
 
@@ -20,42 +20,66 @@ pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/E
 ALLTHEFILES <- dir()
 
 File_Num <- length(ALLTHEFILES) #+1
-File_list <- matrix(1:File_Num, nrow=File_Num, ncol=2)
+
+metadata <- rep(NA, 2) #Runs, Ks
+
+#This ridiculous thing just makes is so I can get the highest run number without a loop, and the next one gets the highest K
+metadata[1] <- max(as.numeric(as.matrix(as.data.frame(regmatches(ALLTHEFILES, regexec("^([0-9]+)", ALLTHEFILES))))))
+
+metadata[2] <- max(as.numeric(as.matrix(as.data.frame(regmatches(ALLTHEFILES, regexec("-([0-9]+)", ALLTHEFILES))))))
+	
+
+File_list <- matrix(
+	c(
+		rep(1:metadata[2], metadata[1]),
+		rep(1:metadata[1], each=metadata[2]),
+		rep(NA, File_Num)
+		), 
+	nrow=File_Num, ncol=3)
+colnames(File_list) <- c("K", "randomization", "runname")
+
+
 for(n in 1:File_Num){
-	x <- ALLTHEFILES[n]
-	m <- regexec("-([0-9]+)", x)
-	K_new <- regmatches(x, m)
+	nameoffile <- ALLTHEFILES[n]
+	randomization <- regexec("^([0-9]+)", nameoffile)
+	random_new <- regmatches(nameoffile, randomization)
+	R <- random_new[[1]][2]
+		
+	testedK <- regexec("-([0-9]+)", nameoffile)
+	K_new <- regmatches(nameoffile, testedK)
 	K <- K_new[[1]][2]
-	#print(K)
-	File_list[as.numeric(K),1] <- x
+	
+	File_list[File_list[,1]==as.numeric(K) & File_list[,2]==as.numeric(R),3] <- nameoffile
 }
 
 #Sort each STRUCTURE file and metadata file by the plant ID number then combine them. This gets rid
 #of the random order of indivduals needed to run STRUCTURE
 
-for(i in c(1:length(ALLTHEFILES))){  # <- 1:length for K=1, 2:length for no
+for(run_num in c(1:metadata[1])){
 	
-dataset <- File_list[i,1]
-str.data <- 0
-str.data <- read.csv(dataset, header=F)
-str.to.sort <- order(str.data$V2)
-str.sorted <- str.data[str.to.sort,] 
-str.sorted <- str.sorted[,c(3,5:ncol(str.data-3))]
-K = length(str.sorted)-1
-colnames(str.sorted) <- c("%missing",1:(ncol(str.sorted)-1))
+	for(i in c(1:metadata[2])){  # <- 1:length for K=1, 2:length for no
+	
+		dataset <- File_list[File_list[,1]==i & File_list[,2]==run_num,3]
+		str.data <- 0
+		str.data <- read.csv(dataset, header=F)
+		str.to.sort <- order(str.data$V2)
+		str.sorted <- str.data[str.to.sort,] 
+		str.sorted <- str.sorted[,c(3,5:ncol(str.data-3))]
+		K = length(str.sorted)-1
+		colnames(str.sorted) <- c("%missing",1:(ncol(str.sorted)-1))
 
-#Get the metadata about each individual from a seperate file. Remove all the "RA" and "NZIL" individuals
+#Get the label/metadata about each individual from a seperate file. Remove all the "RA" and "NZIL" individuals
 
-labels <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEditOrder.csv", header=F, col.names=c("Individual", "Type", "Pop", "Order", "Name", "Species", "Color", "Vernalization", "DTF", "Bins"))
+		labels <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEditOrder.csv", header=F, col.names=c("Individual", "Type", "Pop", "Order", "Name", "Species", "Color", "Vernalization", "DTF", "Bins"))
 
-labels <- labels[labels$Type!="UnknownType",]
-labels <- labels[labels$Pop!="NZIL",]
+		labels <- labels[labels$Type!="UnknownType",]
+		labels <- labels[labels$Pop!="NZIL",]
 
-labels.to.sort <- order(labels$Individual)
-labels.sorted <- labels[labels.to.sort,]
+		labels.to.sort <- order(labels$Individual)
+		labels.sorted <- labels[labels.to.sort,]
 
-all.data <- cbind(labels.sorted[,2:10],str.sorted)
-row.names(all.data) <- labels.sorted$Individual
+	all.data <- cbind(labels.sorted[,2:10],str.sorted)
+	row.names(all.data) <- labels.sorted$Individual
 
 #For prettier plotting, lump all of the different species together. Later you'll plot each
 #species seperately in a divided plotting screen
@@ -133,11 +157,7 @@ axis(side=1, at=c(5,16,27,40,51,62), tick=F, labels=c("Arena", "Colonel", "Adagi
 
 
 }    
-
-
-#, space=c(rep(0, 10), rep(1, 1), rep(0, 9)), xaxt='n')
-#	axis( side=1, at=c(2,4,6,8,10,12,14,16), labels=c(rep("name", 8)))
-
+}
 
 
 dev.off()
