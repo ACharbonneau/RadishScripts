@@ -13,4 +13,4 @@ legend(0.025, 13000, legend=levels(taco$Pop1), pch=16, col=c("red", "blue", "gol
 
 
 
-plot(taco$FST, taco$PhyDist, pch=15)
+plot(taco$FST, taco$PhyDist, pch=15, xlab="Pairwise Fst", ylab="Pairwise Physical Distance, kilometers", main="Isolation by Distance of weeds" )
