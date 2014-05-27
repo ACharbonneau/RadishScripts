@@ -7,9 +7,12 @@
 
 # step 4 - glom all the matrices together to make your new shit.
 
-crap  <- read.csv("~/Documents/RadishData/MarkerData/TransSSR.csv", colClasses=rep( "factor", 4 ), header=F)
+#crap  <- read.csv("~/Documents/RadishData/MarkerData/TransSSR.csv", colClasses=rep( "factor", 4 ), header=F)
 
-crap
+crap  <- read.csv("~/Dropbox/RadishWeedEvolution/Israel_Spain/JustSSR2014.txt", colClasses=rep( "factor", 4 ), header=T)
+
+
+str(crap)
 
 output <- list()
 n.SSR <- ncol( crap )/2
@@ -20,13 +23,25 @@ dummy <- rnorm( nrow( crap ), 0, 1 )
 for (i in seq(n.SSR) ){
 	col.A <- crap[,col.odd[i]]
 	col.B <- crap[,col.even[i]]
+	print(levels(col.A))
+	print(levels(col.B))
+	}
+	
+for (i in seq(n.SSR) ){
+	col.A <- crap[,col.odd[i]]
+	col.B <- crap[,col.even[i]]
 	mod.1 <- lm( dummy ~ 0 + col.A )
 	mod.2 <- lm( dummy ~ 0 + col.B )
 	output[[i]] <- model.matrix( mod.1 ) + model.matrix( mod.2 )
+	names( output )[[i]] <- paste( names(crap)[col.odd[i]])
+}
+
+for (i in seq(n.SSR) ){
+	dimnames(output[[i]])[[2]] <- sub( "col", names(output)[[i]], dimnames(output[[i]])[[2]] )
 }
 
 new.crap <- data.frame( do.call( "cbind", output ))
 
-new.crap
+head(new.crap)
 
-write.csv(new.crap, "~/Documents/RadishData/MarkerData/SSRmarkers.csv", row.names=F)
+write.csv(new.crap, "~/Dropbox/RadishWeedEvolution/Israel_Spain/JustSSRbiallele2014.txt", row.names=F)

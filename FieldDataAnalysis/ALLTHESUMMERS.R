@@ -3,6 +3,7 @@
 rm( list=ls())
 
 require(lme4)
+require(plyr)
 require(RColorBrewer)
 source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/Functionarium.R', chdir = TRUE)
 
@@ -80,73 +81,34 @@ allthedata$eco <- factor(allthedata$eco)
 
 allthedata2 <- droplevels(allthedata[allthedata$eco != "UnknownType" & allthedata$Pop != "ZYIL",] )
 
+natives_year <- droplevels(ddply(allthedata2[allthedata2$eco=="MAES" | allthedata2$eco=="maritimus" | allthedata2$eco=="Weedy",], .(eco, Year), summarize, mean=mean2(DTF), N=length2(GD), prop=(length2(DTF[DTF < 90])/ length2(GD)) ))
+
 
 #######################  Proportions  ################################
 
 
 ####################### By Population ################################
-populations <- levels(allthedata2$Pop)
+proportions <- droplevels(ddply(allthedata2, 
+	.(Pop,eco), summarize,  
+	N=length2(GD), 
+	prop=(length2(DTF[DTF < 90])/ length2(GD))
+ ))
 
-	# Make a table to hold the graphing data
-proportions <- cbind(
-	levels(allthedata2$Pop), 
-	rep(NA, length(levels(allthedata2$Pop))), 
-	rep(NA, length(levels(allthedata2$Pop))),
-	rep(NA, length(levels(allthedata2$Pop))), 
-	rep(NA, length(levels(allthedata2$Pop)))
-)
-
-#Make the empty table into a dataframe with correct data types
-colnames(proportions) <- c("populations", "prop", "N", "type", "SE")
-proportions <- as.data.frame(proportions)
-proportions$prop <- as.numeric(proportions$prop)
-proportions$N <- as.numeric(proportions$N)
-proportions$SE <- as.numeric(proportions$SE)
-
-#Fill the table with proportion flowered, N and SE
-for(pop in populations){
-	proportions[proportions[,1]==pop,2] <-CalcProp(
-		allthedata2$FD[allthedata2$Pop==pop & allthedata2$DTF < 90],
-		allthedata2$GD[allthedata2$Pop==pop])
-	proportions[proportions[,1]==pop,3] <- length(na.omit(allthedata2$GD[allthedata2$Pop==pop]))
-	proportions[proportions[,1]==pop,5] <- SEP(
-		proportions[proportions[,1]==pop,2], proportions[proportions[,1]==pop,3])
-}
+proportions$SE <- SEP(proportions$prop, proportions$N)
 
 ########################### By ecotype ########################
-ecos <- levels(allthedata2$eco)
+eco_prop <- droplevels(ddply(allthedata2, 
+	.(eco), summarize, 
+	N=length2(GD), 
+	prop=(length2(DTF[DTF < 90])/ length2(GD))
+ ))
 
-	# Make a table to hold the graphing data
-eco_prop <- cbind(
-	levels(allthedata2$eco), 
-	rep(NA, length(levels(allthedata2$eco))), 
-	rep(NA, length(levels(allthedata2$eco))),
-	rep(NA, length(levels(allthedata2$eco))), 
-	rep(NA, length(levels(allthedata2$eco)))
-)
+eco_prop$SE <- SEP(eco_prop$prop, eco_prop$N)
 
-#Make the empty table into a dataframe with correct data types
-colnames(eco_prop) <- c("populations", "prop", "N", "type", "SE")
-eco_prop <- as.data.frame(eco_prop)
-eco_prop$prop <- as.numeric(eco_prop$prop)
-eco_prop$N <- as.numeric(eco_prop$N)
-eco_prop$SE <- as.numeric(eco_prop$SE)
-
-#Fill the table with proportion flowered, N and SE
-for(eco in ecos){
-	eco_prop[eco_prop[,1]==eco,2] <-CalcProp(
-		allthedata2$FD[allthedata2$eco==eco & allthedata2$DTF < 90],
-		allthedata2$GD[allthedata2$eco==eco])
-	eco_prop[eco_prop[,1]==eco,3] <- length(na.omit(allthedata2$GD[allthedata2$eco==eco]))
-	eco_prop[eco_prop[,1]==eco,5] <- SEP(
-		eco_prop[eco_prop[,1]==eco,2], eco_prop[eco_prop[,1]==eco,3])
-}
 
 #################### Plotting #########################
 
 ecotypes2 <- ecotypes[ecotypes != "UnknownType"]
-proportions$type <- ecotypes2[proportions$populations]
-proportions$type <- factor(proportions$type)
 
 
 ##Crops
@@ -175,6 +137,7 @@ palette <- c( Black, caudatus, Daikon, European, landra, Luobo, MAES, maritimus,
 
 allthedata2$eco <- factor(allthedata2$eco, c("Weedy", "caudatus", "rostratus", "Luobo", "European", "maritimus", "Black", "Daikon", "MAES", "landra") )
 
+par( las=1)
 plot(allthedata2$DTF ~ allthedata2$eco,
 	xlab="Ecotype or Species", ylab="Days to Flowering",
 	main="Distribution of radish flowering times by ecotype", 
@@ -197,11 +160,11 @@ legend(1.5, 270.5, legend=c(expression(italic("landra")), expression(italic("mar
 
 ######## Distribution of %flower by Ecotype #########
 par(mfrow= c(1,1), las=3)
-bytype <- order(proportions$prop, proportions$prop[proportions$type], decreasing=T)
+bytype <- order(proportions$prop, proportions$prop[proportions$eco], decreasing=T)
 
 barplot( as.numeric(proportions$prop)[bytype], 
 	names.arg= proportions$populations[bytype], 
-	col=palette[proportions$type][bytype], 
+	col=palette[proportions$eco][bytype], 
 	ylim=c(-.03,1), xlim=c(-.15, 42), 
 	ylab="Proportion Flowered", main="Proportion flowering within 90 days, all years, by population") 
 	
@@ -230,7 +193,7 @@ byeco <- order(eco_prop$prop, decreasing=T)
 
 barplot( as.numeric(eco_prop$prop)[byeco], 
 	names.arg= eco_prop$populations[byeco], 
-	col=palette[eco_prop$populations][byeco], 
+	col=palette[eco_prop$eco][byeco], 
 	ylim=c(-.03,1), xlim=c(-.15, 13), 
 	ylab="Proportion Flowered", main="Proportion flowering within 90 days, all years, by ecotype") 
 	
@@ -254,6 +217,30 @@ arrows(xcords2,as.numeric(eco_prop$prop)[byeco], xcords2, as.numeric(eco_prop$pr
 
 
 #######################################################
+#################### DTF_native_year ##################
+par(las=2, mar=c(7,4,4,2))
+plot(droplevels(allthedata2$Year[allthedata2$eco=="MAES" | 	
+		allthedata2$eco=="maritimus" | allthedata2$eco=="Weedy"]):
+	droplevels(allthedata2$eco[allthedata2$eco=="MAES" | 
+		allthedata2$eco=="maritimus" | allthedata2$eco=="Weedy"]),
+	allthedata2$DTF[allthedata2$eco=="MAES" | allthedata2$eco=="maritimus" | allthedata2$eco=="Weedy"],
+	col= c(Weedy, maritimus, MAES), xaxt='n',
+	main="Variation in DTF by year")
+	
+axis(side=1, at=1:12, labels=c( "Weedy S05","maritimus S05", "MAES S05", "Weeds S12", "maritimus S12", "MAES S12", "Weeds S13", "maritimus S13", "MAES S13", "Weeds F13", "maritimus F13", "MAES F13"))
+
+#######################################################
+	
+par(las=3, mar=c(8,5,5,4))
+barplot(natives_year$prop, col=c(MAES, maritimus, Weedy)[natives_year$eco],names.arg=c( "MAES S05",   "MAES S12",   "MAES S13",  	"MAES F13", "maritimus S05", "maritimus S12", "maritimus S13", "maritimus F13","Weedy S05", "Weeds S12", "Weeds S13", "Weeds F13" ), main="Proportion flowering in 90 days, by year" )
+#axis( side=1, at=1:12, labels=natives_year$eco)
+
+
+
+####################
+
+
+
 
 m1 <- with(allthedata, lm(DTF ~ Pop + Year))
 

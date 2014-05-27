@@ -23,7 +23,7 @@ CalcSE <- function(x){
 
 #Standard Error of a proportion
 SEP <- function( x, n ){
-	sqrt( ( x * (1-x) ) / (n - 1) )
+	B <- sqrt( ( x * (1-x) ) / (n - 1) )
 }
 
 ConditionNumber <- function(model.x=model.object){
