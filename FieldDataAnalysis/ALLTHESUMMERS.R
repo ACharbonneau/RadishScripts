@@ -15,6 +15,7 @@ plants2012 <- read.csv("/Volumes/Storage/RadishData/Summer2012Planting/2012Field
 
 lale2005 <- read.csv("/Volumes/Storage/RadishData/Manuscripts/2005markerPaper/OldDatasets/LaleField2005.csv")
 
+greenhouseAll <- read.csv("/Volumes/Storage/RadishData/Manuscripts/2005markerPaper/GreenhouseFlwrT Height.csv")
 
 # Make dates into something R understands
 
@@ -51,11 +52,11 @@ lale2005$OvuleDate <- as.POSIXct( strptime(lale2005$OvuleDate, format="%m/%d/%y"
 lale2005$family <- as.factor(lale2005$family)
 
 
-subnames <- c("Pop", "DTB", "DTF", "Year", "FD", "GD")
-lalesub <- data.frame(lale2005$population, rep(NA, length(lale2005$population)), lale2005$DaysGermToFlwr, rep("lale2005", length(lale2005$population)), lale2005$First_FlowerDate,lale2005$Germination_Date)
-p2012sub <- data.frame(plants2012$Code, plants2012$Days_Germ_to_Bolt, plants2012$Days_Germ_to_Flow, rep("Sum2012", length(plants2012$Code)), plants2012$Flowering_Date, plants2012$Germ_Date)
-s2013sub <- data.frame(spring2013$Name, spring2013$DTB, spring2013$DTF, rep("Sum2013", length(spring2013$Name)), spring2013$FD, spring2013$GD)
-f2013sub <- data.frame(fall2013$Code, fall2013$DTB, fall2013$DTF, rep("Fall2013", length(fall2013$Code)), fall2013$FD, fall2013$GD)
+subnames <- c("Dataset", "Pop", "DTB", "DTF", "Year", "FD", "GD")
+lalesub <- data.frame(rep("Lale05", length(lale2005$population)), lale2005$population, rep(NA, length(lale2005$population)), lale2005$DaysGermToFlwr, rep("lale2005", length(lale2005$population)), lale2005$First_FlowerDate,lale2005$Germination_Date)
+p2012sub <- data.frame(rep("field2012", length(plants2012$Code)), plants2012$Code, plants2012$Days_Germ_to_Bolt, plants2012$Days_Germ_to_Flow, rep("Sum2012", length(plants2012$Code)), plants2012$Flowering_Date, plants2012$Germ_Date)
+s2013sub <- data.frame(rep("field2013", length(spring2013$Name)), spring2013$Name, spring2013$DTB, spring2013$DTF, rep("Sum2013", length(spring2013$Name)), spring2013$FD, spring2013$GD)
+#f2013sub <- data.frame(fall2013$Code, fall2013$DTB, fall2013$DTF, rep("Fall2013", length(fall2013$Code)), fall2013$FD, fall2013$GD)
 colnames(lalesub) <- subnames
 colnames(p2012sub) <- subnames
 colnames(s2013sub) <- subnames
