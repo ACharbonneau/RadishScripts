@@ -5,9 +5,11 @@ require(RColorBrewer)
 ########################################################
 
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/parsed_data")
+setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/parsed_data")
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NoRANoNZIL/RanalphaNZIL.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/RanalphaNewPops.pdf", height=9.3, width=15.3)
+
+
 
 ########################################################
 

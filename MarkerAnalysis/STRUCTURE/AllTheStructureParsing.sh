@@ -6,7 +6,7 @@ for i in `ls *_f`
 	done > AlltheProbabilities.txt
 
 for i in `ls *_f`
-	do grep -A 269 "Inferred ancestry of individuals" $i > $i.forparse
+	do grep -A 339 "Inferred ancestry of individuals" $i > $i.forparse
 done
 
 for i in `ls *forparse`
