@@ -1,4 +1,4 @@
-#Preliminary poking at summer 2013 dataset
+#Metaanalysis of a bunch of phenotyping datasets: 2 from Amanda, and several from Jefs's various archives
 
 rm( list=ls())
 
@@ -9,7 +9,7 @@ source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/Functionarium.R',
 
 spring2013 <- read.csv("/Volumes/Storage/RadishData/Summer2013Planting/2013plantsSpring.csv", sep=",", na.strings="")
 
-fall2013 <- read.csv("/Volumes/Storage/RadishData/Summer2013Planting/2013plantsFall.csv", sep=",", na.strings="")
+#fall2013 <- read.csv("/Volumes/Storage/RadishData/Summer2013Planting/2013plantsFall.csv", sep=",", na.strings="")
 
 plants2012 <- read.csv("/Volumes/Storage/RadishData/Summer2012Planting/2012FieldData.csv", sep=",", na.strings="")
 
@@ -19,23 +19,24 @@ greenhouseAll <- read.csv("/Volumes/Storage/RadishData/Manuscripts/2005markerPap
 
 # Make dates into something R understands
 
-
+spring2013$PD <- as.POSIXct( strptime(spring2013$Plant_Date, format="%m/%d/%y"))
 spring2013$GD <- as.POSIXct( strptime(spring2013$Germ_Date, format="%m/%d/%y"))
 spring2013$BD <- as.POSIXct( strptime(spring2013$Bolt_Date, format="%m/%d/%y"))
 spring2013$FD <- as.POSIXct( strptime(spring2013$Flower_Date, format="%m/%d/%y"))
 spring2013$blossom <- as.POSIXct( strptime(spring2013$Blossom_Collected, format="%m/%d/%y"))
+spring2013$PTF <- spring2013$FD - spring2013$PD
 spring2013$DTB <- spring2013$BD - spring2013$GD
 spring2013$DTF <- spring2013$FD - spring2013$GD
 
 
-fall2013$GD <- as.POSIXct( strptime(fall2013$Germ_Date, format="%m/%d/%y"))
-fall2013$BD <- as.POSIXct( strptime(fall2013$Bolt_Date, format="%m/%d/%y"))
-fall2013$FD <- as.POSIXct( strptime(fall2013$Flower_Date, format="%m/%d/%y"))
-fall2013$blossom <- as.POSIXct( strptime(fall2013$Blossom_Collected, format="%m/%d/%y"))
-fall2013$DTB <- fall2013$BD - fall2013$GD
-fall2013$DTF <- fall2013$FD - fall2013$GD
+#fall2013$GD <- as.POSIXct( strptime(fall2013$Germ_Date, format="%m/%d/%y"))
+#fall2013$BD <- as.POSIXct( strptime(fall2013$Bolt_Date, format="%m/%d/%y"))
+#fall2013$FD <- as.POSIXct( strptime(fall2013$Flower_Date, format="%m/%d/%y"))
+#fall2013$blossom <- as.POSIXct( strptime(fall2013$Blossom_Collected, format="%m/%d/%y"))
+#fall2013$DTB <- fall2013$BD - fall2013$GD
+#fall2013$DTF <- fall2013$FD - fall2013$GD
 
-
+plants2012$Plant_Date <- as.POSIXct( strptime(plants2012$Planting_Date, format="%m/%d/%y"))
 plants2012$Germ_Date <- as.POSIXct( strptime(plants2012$Germ_Date, format="%m/%d/%y"))
 plants2012$Died_By <- as.POSIXct( strptime(plants2012$Died_By, format="%m/%d/%y"))
 plants2012$Bolted_Date <- as.POSIXct( strptime(plants2012$Bolted_Date, format="%m/%d/%y"))
@@ -43,6 +44,7 @@ plants2012$Flowering_Date <- as.POSIXct( strptime(plants2012$Flowering_Date, for
 plants2012$Date_Blossom_Collected <- as.POSIXct( strptime(plants2012$Date_Blossom_Collected, format="%m/%d/%y"))
 plants2012$second_bolt <- as.POSIXct( strptime(plants2012$second_bolt, format="%m/%d/%y"))
 plants2012 <- droplevels(plants2012[plants2012$subpop != "unknown" & plants2012$subpop != "cross" & plants2012$subpop != "confusus", ])
+plants2012$PTF <- plants2012$Flowering_Date - plants2012$Plant_Date
 
 lale2005$Planting_Date <- as.POSIXct( strptime(lale2005$Planting_Date, format="%m/%d/%y"))
 lale2005$Germination_Date <- as.POSIXct( strptime(lale2005$Germination_Date, format="%m/%d/%y"))
@@ -50,35 +52,89 @@ lale2005$First_FlowerDate <- as.POSIXct( strptime(lale2005$First_FlowerDate, for
 lale2005$Mortality_Date <- as.POSIXct( strptime(lale2005$Mortality_Date, format="%m/%d/%y"))
 lale2005$OvuleDate <- as.POSIXct( strptime(lale2005$OvuleDate, format="%m/%d/%y"))
 lale2005$family <- as.factor(lale2005$family)
+lale2005$PTF <- lale2005$First_FlowerDate - lale2005$Planting_Date
 
+#Get the various spreadhseets into the same format
 
-subnames <- c("Dataset", "Pop", "DTB", "DTF", "Year", "FD", "GD")
-lalesub <- data.frame(rep("Lale05", length(lale2005$population)), lale2005$population, rep(NA, length(lale2005$population)), lale2005$DaysGermToFlwr, rep("lale2005", length(lale2005$population)), lale2005$First_FlowerDate,lale2005$Germination_Date)
-p2012sub <- data.frame(rep("field2012", length(plants2012$Code)), plants2012$Code, plants2012$Days_Germ_to_Bolt, plants2012$Days_Germ_to_Flow, rep("Sum2012", length(plants2012$Code)), plants2012$Flowering_Date, plants2012$Germ_Date)
-s2013sub <- data.frame(rep("field2013", length(spring2013$Name)), spring2013$Name, spring2013$DTB, spring2013$DTF, rep("Sum2013", length(spring2013$Name)), spring2013$FD, spring2013$GD)
+subnames <- c("Dataset", "experiment", "Pop", "PTF", "DTB", "DTF", "Year", "FD", "GD")
+
+lalesub <- data.frame(rep("Lale05", length(lale2005$population)), 
+	rep("field", length(lale2005$population)), 
+	lale2005$population,
+	lale2005$PTF, 
+	rep(NA, length(lale2005$population)), 
+	lale2005$DaysGermToFlwr, 
+	rep("2005", length(lale2005$population)), 
+	lale2005$First_FlowerDate,
+	lale2005$Germination_Date)
+	
+p2012sub <- data.frame(rep("field2012", length(plants2012$Code)), 
+	rep("field", length(plants2012$Code)),
+	plants2012$Code,
+	plants2012$PTF, 
+	plants2012$Days_Germ_to_Bolt, 
+	plants2012$Days_Germ_to_Flow, 
+	rep("2012", length(plants2012$Code)), 
+	plants2012$Flowering_Date, 
+	plants2012$Germ_Date)
+	
+s2013sub <- data.frame(rep("field2013", length(spring2013$Name)),
+	rep("field", length(spring2013$Name)), 
+	spring2013$Name, 
+	spring2013$PTF,
+	spring2013$DTB, 
+	spring2013$DTF, 
+	rep("2013", length(spring2013$Name)), 
+	spring2013$FD, 
+	spring2013$GD)
+	
 #f2013sub <- data.frame(fall2013$Code, fall2013$DTB, fall2013$DTF, rep("Fall2013", length(fall2013$Code)), fall2013$FD, fall2013$GD)
+greenhouse <- data.frame(greenhouseAll$dataset,
+	rep("gh", length(greenhouseAll$dataset)),
+	greenhouseAll$Pop,
+	greenhouseAll$DaysToFlwr,
+	rep(NA, length(greenhouseAll$dataset)),
+	rep(NA, length(greenhouseAll$dataset)),
+		c(rep(NA, length(greenhouseAll$dataset[greenhouseAll$dataset=="Heather"])),
+		rep("2006", length(greenhouseAll$dataset[greenhouseAll$dataset=="GH2006"])),
+		rep("2010", length(greenhouseAll$dataset[greenhouseAll$dataset=="GH2010"])),
+		rep("2013",length(greenhouseAll$dataset[greenhouseAll$dataset=="Cult2013" | greenhouseAll$dataset=="GH2013"])),
+		rep("2009", length(greenhouseAll$dataset[greenhouseAll$dataset=="GH2009"]))),
+	rep(NA, length(greenhouseAll$dataset)),
+	rep(NA, length(greenhouseAll$dataset)))
+
 colnames(lalesub) <- subnames
 colnames(p2012sub) <- subnames
 colnames(s2013sub) <- subnames
-colnames(f2013sub) <- subnames
+#colnames(f2013sub) <- subnames
+colnames(greenhouse) <- subnames
 
 lalesub$Pop <- factor( lalesub$Pop )
 p2012sub$Pop <- factor(p2012sub$Pop )
 s2013sub$Pop <- factor(s2013sub$Pop )
-f2013sub$Pop <- factor(f2013sub$Pop )
+#f2013sub$Pop <- factor(f2013sub$Pop )
+greenhouse$Pop <- factor(greenhouse$Pop)
 
-ecotypes <- c(AFFR="Weedy",  AL="Weedy", AUFI="Weedy",  BINY="Weedy",  CBBG="European",  CBES="maritimus",  CGBC="Luobo",  COAU="Weedy",  DAJO="European",  DEES="UnknownType",  ESNK="European",  FGBC="Luobo",  FRSI="European",  GHIL="UnknownType",  GMIL="rostratus",  HCES="UnknownType",  HMES="UnknownType",  HZIL="UnknownType",  KAMI="Weedy",  LBBC="Black",  M3AU="Weedy",  MABG="caudatus",  MAES="MAES",  MBBC="European",  MYJO="Daikon",  N3="Weedy",  NELO="Daikon",  NTJO="Black",  PABS="European",  PBFR="landra",  PG6="Weedy",  RABG="caudatus",  RABS="European",  RACA="caudatus",  RBBC="Black",  REIL="Weedy",  SAES="maritimus",  SPNK="European",  TOBG="Daikon",  WMBG="Daikon", ZYIL="UnknownType")
+species <- c(ADOL="sativus", AFFR="raphanistrum",  AL="raphanistrum", AROL="sativus", AUFI="raphanistrum", BBCA="Cali Hybrid", BINY="raphanistrum",  CBBG="sativus",  CBES="maritimus",  CGBC="sativus",  COAU="raphanistrum", Cool="sativus", DAJO="sativus",  DEES="UnknownType",  ESNK="sativus",  FGBC="sativus",  FRSI="sativus",  GHIL="UnknownType",  GMIL="rostratus",  HCES="UnknownType",  HMES="UnknownType",  HZIL="UnknownType", IMES="UnknownType", KAMI="raphanistrum",  LBBC="sativus",  M3AU="raphanistrum",  MABG="sativus",  MAES="MAES", MAFI="raphanistrum", MBBC="sativus",  MYJO="sativus",  N3="raphanistrum", NAAU="raphanistrum",  NELO="sativus",  NM="MSNY F2", NTJO="sativus", NZIL="confusus", OIBG="no idea", PABS="sativus",  PBFR="landra",  PG6="raphanistrum",  RABG="sativus",  RABS="sativus",  RACA="caudatus",  RBBC="Black",  REIL="raphanistrum",  SAES="maritimus", SM="Cali Hybrid", SPEU="sativus", SPNK="sativus",  TOBG="sativus", TYIL="raphanistrum", WEAU="raphanistrum", WMBG="Daikon", ZYIL="UnknownType")
 
-allthedata <- data.frame(rbind(lalesub, p2012sub, s2013sub, f2013sub))
+
+phenotypes <- c(ADOL="oilseed", AFFR="Weedy",  AL="Weedy", AROL="oilseed", AUFI="Weedy", BBCA="Cali Hybrid", BINY="Weedy",  CBBG="European",  CBES="maritimus",  CGBC="Luobo",  COAU="Weedy", Cool="oilseed", DAJO="European",  DEES="UnknownType",  ESNK="European",  FGBC="Luobo",  FRSI="European",  GHIL="UnknownType",  GMIL="rostratus",  HCES="UnknownType",  HMES="UnknownType",  HZIL="UnknownType", IMES="UnknownType", KAMI="Weedy",  LBBC="Black",  M3AU="Weedy",  MABG="caudatus",  MAES="MAES", MAFI="Weedy", MBBC="European",  MYJO="Daikon",  N3="Weedy", NAAU="Weedy",  NELO="Daikon",  NM="MSNY F2", NTJO="Black", NZIL="confusus", OIBG="no idea", PABS="European",  PBFR="landra",  PG6="Weedy",  RABG="caudatus",  RABS="European",  RACA="caudatus",  RBBC="Black",  REIL="Weedy",  SAES="maritimus", SM="Cali Hybrid", SPEU="European", SPNK="European",  TOBG="Daikon", TYIL="Weedy", WEAU="Weedy", WMBG="Daikon", ZYIL="UnknownType")
+
+location <- c(ADOL="crop", AFFR="NativeRange",  AL="Nonnative", AROL="crop", AUFI="Nonnative", BBCA="Cali Hybrid", BINY="Nonnative",  CBBG="crop",  CBES="maritimus",  CGBC="crop",  COAU="Nonnative", Cool="crop", DAJO="crop",  DEES="NativeRange",  ESNK="crop",  FGBC="crop",  FRSI="crop",  GHIL="NativeRange",  GMIL="rostratus",  HCES="NativeRange",  HMES="NativeRange",  HZIL="NativeRange", IMES="NativeRange", KAMI="Nonnative",  LBBC="crop",  M3AU="Nonnative",  MABG="crop",  MAES="NativeRange", MAFI="Nonnative", MBBC="crop",  MYJO="crop",  N3="Nonnative", NAAU="Nonnative",  NELO="crop",  NM="MSNY F2", NTJO="crop", NZIL="confusus", OIBG="no idea", PABS="crop",  PBFR="maritimus",  PG6="Nonnative",  RABG="crop",  RABS="crop",  RACA="crop",  RBBC="crop",  REIL="Nonnative",  SAES="maritimus", SM="Cali Hybrid", SPEU="crop", SPNK="crop",  TOBG="crop", TYIL="Nonnative", WEAU="Nonnative", WMBG="crop", ZYIL="NativeRange")
+
+allthedata <- data.frame(rbind(lalesub, p2012sub, s2013sub, greenhouse))
 allthedata$Pop <- as.factor(as.character(droplevels(allthedata$Pop)))
-allthedata$eco <- ecotypes[allthedata$Pop]
+allthedata$pheno <- phenotypes[allthedata$Pop]
+allthedata$local <- location[allthedata$Pop]
 #allthedata$eco <- as.factor(allthedata$eco)
+
+write.csv(allthedata, "/Volumes/Storage/RadishData/Manuscripts/2005markerPaper/allthedatatest.csv", quote=F, row.names=F)
 
 newlist <- list(allthedata$Pop, allthedata$Year)
 allthemeans <- tapply(allthedata$DTF, newlist, FUN=mean2)
 allthevars <- tapply(allthedata$DTF, newlist, FUN=var2)
 allthesds <- sqrt(allthevars)
-allthedata$eco <- factor(allthedata$eco)
+allthedata$pheno <- factor(allthedata$pheno)
 
 allthedata2 <- droplevels(allthedata[allthedata$eco != "UnknownType" & allthedata$Pop != "ZYIL",] )
 
