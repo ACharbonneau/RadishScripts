@@ -1,0 +1,54 @@
+---
+title: "RaphanusPopulationMap"
+author: "Amanda Charbonneau"
+date: "December 18, 2014"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r, echo=FALSE, message=FALSE}
+gpclibPermit()
+library(maptools)
+library(maps)
+library(ggmap)
+```
+
+```{r}
+
+visited <- c("Fontfroide Abbey, France", "Aura, Finland", "Chenango Bridge, NY", "Cobreces", "Cowra, Australia", "38º23’ 25.18” N, 3º29’ 39.88” W", "32.175140, 34.933777", "Gilboa Mt", "37º 18' 05.93'' N, 5º 57' 57.81'' W", "37º 16' 35.66'' N, 5º 57' 16.80'' W", "32.175140, 34.824686", "37º 13' 16.73'' N, 5º 58' 30.50'' W", "Colmenar Viejo", "52° 58.698' N, 9° 37.865 E", "Nazareth", "Port Barcares, France", "Rehovot, Israel", "Noja, Santander", "Tel-Itshak, Israel", "Westonia, Australia", "31.93344, 34.786491")
+ll.visited <- geocode(visited)
+visit.x <- ll.visited$lon
+visit.y <- ll.visited$lat
+#> dput(visit.x)
+#c(-122.389979, 80.249583, -0.1198244, 144.96328, 28.06084)
+#> dput(visit.y)
+#c(37.615223, 13.060422, 51.5112139, -37.814107, -26.1319199)
+```
+
+
+```{r}
+#USING MAPS
+map("world", fill=TRUE, col="white", bg="lightblue", ylim=c(-60, 90), mar=c(0,0,0,0))
+points(visit.x, visit.y, col="red", pch=16)
+```
+
+```{r}
+require(maps)
+
+require(mapdata)
+require(maptools)
+gpclibPermit()
+
+
+```
+
+```{r}
+world_countries <- readShapePoly("/Users/Will/Documents/=WORK=/African_Lines/Plots&Tables/countries_shp/countries.shp")
+africa <- world_countries[world_countries$CONTINENT=="Africa",]
+
+
+```
+
