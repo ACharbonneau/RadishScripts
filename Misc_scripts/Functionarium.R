@@ -50,7 +50,10 @@ var2 <- function(x){
 	x <- x[!is.na(x)]
 	var(x)
 }
-
+sd2 <- function(x){
+  x <- x[!is.na(x)]
+  sd(x)
+}
 
 # univariate Rsquared and partial Rsquared calculators
 
