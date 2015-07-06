@@ -1,13 +1,13 @@
-source('/Volumes/Storage/RadishData/RadishScripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
+source('/Volumes/Storage/RadishData/Scripts/Misc_scripts/AmandaSource.R', chdir = TRUE)
 require(RColorBrewer)
 #dataset <- "NoRACoNo-5_f.txt"
 
 ########################################################
 
 
-setwd("/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/parsed_data")
+setwd("/Volumes/Storage/RadishData/21MarkersData/Analysis/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/parsed_data/")
 
-pdf(file="/Volumes/Storage/RadishData/2005MarkerData/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/RanalphaNewPops.pdf", height=9.3, width=15.3)
+pdf(file="/Volumes/Storage/RadishData/21MarkersData/Analysis/STRUCTURE/RedoneStructure/EstimateK/Corrfreq/NewPops2013/RanalphaNewPops.pdf", height=9.3, width=15.3)
 
 
 
@@ -72,7 +72,7 @@ for(run_num in c(1:metadata[1])){
 
 #Get the label/metadata about each individual from a seperate file. Remove all the "RA" and "NZIL" individuals
 
-		labels <- read.csv("/Volumes/Storage/RadishData/2005MarkerData/MarkerPopEditOrder.csv", header=F, col.names=c("Individual", "Type", "Pop", "Order", "Name", "Species", "Color", "Vernalization", "DTF", "Bins"))
+    labels <- read.csv("/Volumes/Storage/RadishData/21MarkersData/Analysis/MarkerPopEditOrder2014.csv", header=F, col.names=c("Individual", "Type", "Pop", "Order", "Name", "Species", "Color", "Vernalization", "DTF", "Bins", "locals"))
 
 		labels <- labels[labels$Type!="UnknownType",]
 		labels <- labels[labels$Pop!="NZIL",]
@@ -163,3 +163,4 @@ axis(side=1, at=c(5,16,27,40,51,62), tick=F, labels=c("Arena", "Colonel", "Adagi
 
 
 dev.off()
+
